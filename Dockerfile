@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-EXPOSE 4509
+EXPOSE 5508
 
 WORKDIR /app
 

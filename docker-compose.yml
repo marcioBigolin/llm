@@ -19,9 +19,9 @@ services:
     volumes:
       - ./:/app
     expose:
-      - 4509
+      - 5508
     ports:
-      - 4509:4509
+      - 5508:5508
     extra_hosts: #Se o Ollama estiver rodando localmente
       - "host.docker.internal:host-gateway"
     command: python3 -B ./service.py

@@ -1,0 +1,9 @@
+Flask==3.0.3
+
+#RAG
+qdrant-client==1.12.2
+langchain==0.3.19
+langchain-community==0.3.18
+langchain-qdrant==0.2.0
+langchain-google-genai==2.1.0
+PyPDF2==3.0.1
