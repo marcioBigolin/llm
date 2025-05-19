@@ -1,0 +1,28 @@
+services:
+  qdrant:
+    image: qdrant/qdrant
+    expose:
+      #portas para dev apenas
+      - 6333
+    ports:  #para acessar no navegador local utilize
+      - 6333:6333
+    volumes: 
+      - ./qdrant_storage:/qdrant/storage:z
+  
+  server:
+    build:
+      dockerfile: ./Dockerfile
+      context: . 
+    #image: enyalius/llm-dev #ver de usar uma imagem completa com o vini
+    environment:
+      - OLLAMA_URL=${OLLAMA_URL:-http://192.168.100.35:11434} #alterar para o IP do seu computador
+    volumes:
+      - ./:/app
+    expose:
+      - 4509
+    ports:
+      - 4509:4509
+    extra_hosts: #Se o Ollama estiver rodando localmente
+      - "host.docker.internal:host-gateway"
+    command: python3 -B ./service.py
+   
