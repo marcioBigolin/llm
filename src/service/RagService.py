@@ -2,15 +2,23 @@ import io
 
 import util.QdrantServer as QdrantServer
 import util.Eny as Eny
+import util.llm as llm
+
+
+
 from PyPDF2 import PdfReader
 
+from langchain.schema import SystemMessage, HumanMessage
+
+
+
+serverModel = QdrantServer.getClientModel('interno', 'demo', 'gemini', criar=True) #Conecta e cria a coleção
 
 def treinarArquivo(arquivo):
     """
     Função para treinar o arquivo.
     """
     # Lógica para treinar o arquivo
-    serverModel = QdrantServer.getClientModel('interno', 'demo', 'gemini', criar=True) #Conecta e cria a coleção
       
 
     vectorstore = QdrantServer.getVectorStore(serverModel) #define o vetorstore
@@ -72,3 +80,41 @@ def contexts(texts, page_num, metadata):
         newContext['pagina'] = page_num+1
         contextos.append(newContext)
     return contextos
+
+
+def query(query):
+    retriever = QdrantServer.getRetriever(serverModel)
+    docs = getRelevantDocuments(retriever, query)
+    context = " ".join([doc.page_content for doc in docs])
+    return generation(context, query)
+
+
+def getRelevantDocuments(retriever, question):
+    #AQUI normalmente se faz um pre-processamento do texto 
+    
+    return retriever.invoke(question)
+
+def generation(context, user_question):
+
+    # Formate as partes do prompt manualmente
+    system_prompt = (
+        "Você é um assistente para tarefas de resposta a perguntas. "
+        "Use as seguintes partes do contexto recuperado para responder a pergunta. "
+        "Se você não sabe a resposta ou o contexto não foi passado, diga que "
+        "o documento não fala sobre isso. Use no máximo três frases e mantenha a "
+        "resposta concisa.\n\n{context}"
+    ).format(context=context)
+
+    human_prompt = user_question
+
+    # Crie as mensagens
+    messages = [
+        SystemMessage(content=system_prompt),
+        HumanMessage(content=human_prompt),
+    ]
+
+    # Obtenha a resposta do modelo
+    response = llm.googleLLM().invoke(messages)
+
+    Eny.ds("Resposta: " + response.content)
+    return response.content
