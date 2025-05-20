@@ -1,7 +1,9 @@
 """
     Módulo para definir os modelos de LLM (Large Language Model) a serem utilizados.
     Este módulo contém funções para retornar instâncias de modelos LLM específicos,
-    incluindo Google Gemini e OpenAI.
+    incluindo Google Gemini e OpenAI. Para essa demo deixei apenas o Google Gemini.
+    O módulo também inclui uma função para retornar o modelo de embedding do Google Gemini.
+
     As funções disponíveis são:
         - googleLLM: Retorna uma instância do modelo Google Gemini (Engenharia de prompt).
         - gptLLM: Retorna uma instância do modelo LLM do OpenAI (Engenharia de prompt).
@@ -17,14 +19,12 @@
         embedding_model = embbedLLM(model='gemini')
         openai_model = llm(model='gpt')
 """
-
 import os
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
-from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 
 
-os.environ["GOOGLE_API_KEY"] = os.getenv('GEMINI_API_KEY')
-os.environ['OPENAI_API_KEY'] = os.getenv('API_KEY')
+os.environ["GOOGLE_API_KEY"] = "AIzaSyA8DycW8OVImH9-UYp8QCVIPdK92gjVV28" #o certo é pegar de uma arquivo de ENV mas para uma demo não é necessária os.getenv('GEMINI_API_KEY')
+
 
 OLLAMA_URL = os.getenv('OLLAMA_URL', 'host-gateway')
 
@@ -41,15 +41,6 @@ def getOllamaURL():
 def googleLLM():
     return ChatGoogleGenerativeAI(model="gemini-2.0-flash")
 
-def gptLLM():
-    """
-    Função para retornar o modelo de LLM do OpenAI.
-    Args:
-        model (str): O modelo a ser utilizado. Padrão é 'gpt'.
-    Returns:                
-        ChatOpenAI: O modelo de LLM do OpenAI.
-    """
-    return ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
 
 def embbedLLM(model = 'gemini'):
     """
@@ -59,13 +50,8 @@ def embbedLLM(model = 'gemini'):
     Returns:                
         ChatGoogleGenerativeAI: O modelo de embedding do Google Gemini.
     """
-    if model == 'gpt':
-        return OpenAIEmbeddings()
     if model == 'gemini':
         return GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
     
 def llm(model = 'gemini'):
-    if model == 'gpt':
-        return gptLLM()
-    if model == 'gemini':
-        return googleLLM()
+    return googleLLM()

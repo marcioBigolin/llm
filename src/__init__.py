@@ -8,8 +8,8 @@ def create_app():
         app = Flask(__name__)
         CORS(app) # This will enable CORS for all routes
 
-        from .controllers.rag import rag
-        from .controllers.chat import chat
+        from .controllers.RagController import rag
+        from .controllers.ChatController import chat
 
 
         app.register_blueprint(chat, url_prefix='/')

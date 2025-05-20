@@ -78,6 +78,55 @@ def md5Text(text):
     md5_hash = hashlib.md5(text_bytes)
     return md5_hash.hexdigest()
 
+def md5File(filename):
+    """
+    Calcula o hash MD5 de um arquivo.
+
+    Args:
+        filename: O nome do arquivo para calcular o hash MD5.
+
+    Returns:
+        Uma string hexadecimal representando o hash MD5 do arquivo.
+    """
+    with open(filename, 'rb') as file:
+        file_bytes = file.read()
+        md5_hash = hashlib.md5(file_bytes)
+        return md5_hash.hexdigest()
+
+def moveUploadedFile(file, path):
+    """
+    Move um arquivo enviado para um diretório específico.
+
+    Args:
+        file: O arquivo enviado.        
+        path: O caminho completo para o qual o arquivo deve ser movido,
+              incluindo o nome do arquivo de destino.
+
+    Returns:
+        True se o arquivo foi movido com sucesso, False caso contrário.
+    """
+    os.makedirs(path, exist_ok=True)
+    try:
+        nome = path + '/' + uniqid() + getExtension(file.filename)
+        file.save(nome)
+        return nome
+    except Exception as e:
+        print(f"Erro ao mover o arquivo: {e}")
+        return False
+
+def getExtension(filename):
+    """
+    Obtém a extensão de um arquivo.
+
+    Args:
+        filename: O nome do arquivo.
+
+    Returns:
+        A extensão do arquivo, incluindo o ponto (por exemplo, ".txt").
+    """
+    return os.path.splitext(filename)[1]
+
+
 
 def uniqid():
     """

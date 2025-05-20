@@ -8,14 +8,26 @@ services:
       - 6333:6333
     volumes: 
       - ./qdrant_storage:/qdrant/storage:z
-  
+  web:
+    image: enyalius/fulldev
+    environment:
+      - WEBAPP_ROOT=frontend
+      #o padrão é 1000 mas se quiser rodar um outro usuário veja o id usando o comando: id -u 
+      - WEBAPP_USER_ID=${USER_ID:-1000}
+    volumes:
+      - ./:/app
+    expose:
+      - 80
+      - 443
+    ports:
+      - 80:80
   server:
     build:
       dockerfile: ./Dockerfile
       context: . 
     #image: enyalius/llm-dev #ver de usar uma imagem completa com o vini
     environment:
-      - OLLAMA_URL=${OLLAMA_URL:-http://192.168.100.35:11434} #alterar para o IP do seu computador
+      - OLLAMA_URL=${OLLAMA_URL:-http://192.168.100.35:11434} #alterar para o IP do seu computador modo de leitura de imagens
     volumes:
       - ./:/app
     expose:

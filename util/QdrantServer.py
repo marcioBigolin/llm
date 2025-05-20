@@ -22,14 +22,10 @@ Eny.ds(QDRANT_PORT)
 #cria clients[collection] padrão
 client = QdrantClient(host=QDRANT, port=QDRANT_PORT)
 
-clientRede = QdrantClient(  url=QDRANT_REDE, 
-                            port=QDRANT_REDE_PORT, 
-                            #api_key=QDRANT_REDE_API_KEY
-                        )
+
 
 clients = {
     "interno": client,
-    "externo": clientRede
 }
 
 #Estrutura de dados que representa o modelo do servidor para consulta 
@@ -79,6 +75,14 @@ def getClientModel(server, collection, model, criar=False):
         'collectionName': collectionName,
         'chunkModel' : _defineChunks(model)
     }
+
+
+def getVectorStore(serverModel):
+    return QdrantVectorStore(
+            client=serverModel['server'],
+            collection_name=serverModel['collectionName'],
+            embedding=llm.embbedLLM(model=serverModel['model']),
+        )
 
 def getRetriever(serverModel):
     """
