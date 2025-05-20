@@ -15,13 +15,20 @@ def treinarArquivo(arquivo):
 
     vectorstore = QdrantServer.getVectorStore(serverModel) #define o vetorstore
 
-    metadata = {}
+    metadata = {
+        'source': arquivo,
+        'pagina': 1,
 
+    }
 
+    all_text = []
+    all_contextos = []
+    Eny.ds(metadata)
     try:
-        pdfReader = PdfReader(io.BytesIO(arquivo))
+        file = open(arquivo, 'rb')
+        pdfReader = PdfReader(io.BytesIO(file.read()))
     except Exception as e:
-        return "Error: Unable to read the PDF file. It may be corrupted."
+        Eny.ds("Error: Unable to read the PDF file. It may be corrupted.")
 
     for page_num in range(len(pdfReader.pages)):
 

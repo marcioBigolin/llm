@@ -9,6 +9,8 @@ Basta digitar
 docker compose up 
 ```
 
+Acesse via http://localhost a app web roda na porta 80 mesmo
+
 ## Documentação técnica
 
 Requisitos do ambiente de dev (se não for usar o docker) é:
